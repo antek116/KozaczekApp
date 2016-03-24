@@ -13,14 +13,24 @@ import java.util.ArrayList;
 
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
+import example.kozaczekapp.Service.DownloadResultReceiver;
 
 
-public class ArticleListFragment extends Fragment{
+public class ArticleListFragment extends Fragment {
     ArticleListAdapter adapter;
+    DownloadResultReceiver receiver;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
          adapter = new ArticleListAdapter(getContext());
+       receiver =  new DownloadResultReceiver() {
+            @Override
+            public void updateAdapter(ArrayList<Article> arrayArticleList) {
+                updateTasksInList(arrayArticleList);
+            }
+        };
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,4 +45,5 @@ public class ArticleListFragment extends Fragment{
         adapter.setArticles(articles);
         adapter.notifyDataSetChanged();
     }
+
 }

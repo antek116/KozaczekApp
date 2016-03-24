@@ -2,21 +2,21 @@ package example.kozaczekapp.Service;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.SparseArray;
 
-import java.util.ArrayList;
+import org.apache.http.HttpResponse;
 
-import example.kozaczekapp.KozaczekItems.Article;
+public class DataWrapper implements Parcelable {
+    public DataWrapper(HttpResponse response) {
+        this.response = response;
+    }
 
-public class DataWrapper extends SparseArray<Parcelable> implements Parcelable {
-    private ArrayList<Article> articles;
+    private HttpResponse response;
 
-    public DataWrapper(ArrayList<Article> articles) {
-        this.articles = articles;
+    public HttpResponse getResponse(){
+        return this.response;
     }
 
     protected DataWrapper(Parcel in) {
-        articles = in.createTypedArrayList(Article.CREATOR);
     }
 
     public static final Creator<DataWrapper> CREATOR = new Creator<DataWrapper>() {
@@ -38,6 +38,5 @@ public class DataWrapper extends SparseArray<Parcelable> implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(articles);
     }
 }

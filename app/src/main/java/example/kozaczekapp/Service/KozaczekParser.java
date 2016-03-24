@@ -4,7 +4,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -18,7 +17,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import example.kozaczekapp.IParser;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.KozaczekItems.Image;
 
@@ -31,8 +29,7 @@ public class KozaczekParser {
     private static final String ENCLOSURE = "enclosure";
     private static final String LINKGUID = "link";
 
-    public KozaczekParser(HttpResponse response) {
-        this.response = response;
+    public KozaczekParser() {
 
     }
     public ArrayList<Article> parse(HttpResponse response) {
