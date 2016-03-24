@@ -1,15 +1,10 @@
 package example.kozaczekapp.Fragments;
 
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,18 +13,11 @@ import java.util.ArrayList;
 
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
-import example.kozaczekapp.Service.DataWrapper;
-import example.kozaczekapp.Service.DownloadResultReceiver;
 
 
 public class ArticleListFragment extends Fragment {
     ArticleListAdapter adapter;
     public static final String PARCELABLE_ARRAY_KEY = "FragmentParcelable";
-
-
-    public ArticleListFragment(){
-
-        }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -47,4 +35,11 @@ public class ArticleListFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public ArticleListAdapter getAdapter() {
+        return adapter;
+    }
+
+    public void setAdapter(ArticleListAdapter adapter) {
+        this.adapter = adapter;
+    }
 }

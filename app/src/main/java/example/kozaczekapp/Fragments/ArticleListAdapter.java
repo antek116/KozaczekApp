@@ -3,6 +3,8 @@ package example.kozaczekapp.Fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -15,15 +17,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import example.kozaczekapp.ImageLoader;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
 
 /**
  * Class implementation of TaskPreview adapter.
  */
-public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> {
-    ArrayList<Article> listOfArticles = new ArrayList<>();;
+public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> implements Parcelable {
+    ArrayList<Article> listOfArticles = new ArrayList<>();
     Context context;
     private LruCache<String,Bitmap> mLruCache;
     /**
@@ -42,19 +43,26 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             }
         };
     }
+
+    protected ArticleListAdapter(Parcel in) {
+        listOfArticles = in.createTypedArrayList(Article.CREATOR);
+    }
+
+    public static final Creator<ArticleListAdapter> CREATOR = new Creator<ArticleListAdapter>() {
+        @Override
+        public ArticleListAdapter createFromParcel(Parcel in) {
+            return new ArticleListAdapter(in);
+        }
+
+        @Override
+        public ArticleListAdapter[] newArray(int size) {
+            return new ArticleListAdapter[size];
+        }
+    };
+
     public Bitmap getBitmapFromMemCache(String key) {
         return mLruCache.get(key);
     }
-
-
-    /**
-     * Method to get all task on list;
-     * @return ArrayList of tasks.
-     */
-    public ArrayList<Article> getListOfArticles(){
-        return listOfArticles;
-    }
-
     /**
      * Method to replace ArrayList of Tasks.
      * @param list ArrayList of Tasks.
@@ -111,6 +119,16 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     @Override
     public int getItemCount() {
         return this.listOfArticles.size();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(listOfArticles);
     }
 
     /**

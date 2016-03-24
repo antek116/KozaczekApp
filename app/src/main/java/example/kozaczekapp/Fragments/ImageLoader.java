@@ -1,4 +1,4 @@
-package example.kozaczekapp;
+package example.kozaczekapp.Fragments;
 
 import android.content.Context;
 import android.graphics.Bitmap;
