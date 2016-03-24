@@ -10,7 +10,7 @@ public class Image implements Parcelable {
     String imageSize;
 
 
-    protected Image(Parcel in) {
+    public Image(Parcel in) {
         imageUrl = in.readString();
         imageSize = in.readString();
     }

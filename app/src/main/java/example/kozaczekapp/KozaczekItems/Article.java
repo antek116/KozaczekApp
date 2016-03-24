@@ -19,6 +19,7 @@ public class Article implements Parcelable {
     }
 
     protected Article(Parcel in) {
+        image = in.readParcelable(Image.class.getClassLoader());
         linkGuide = in.readString();
         title = in.readString();
         description = in.readString();
@@ -64,6 +65,7 @@ public class Article implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(image, flags);
         dest.writeString(linkGuide);
         dest.writeString(title);
         dest.writeString(description);

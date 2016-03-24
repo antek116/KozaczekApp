@@ -98,10 +98,10 @@ public class KozaczekParser {
     }
 
     private Image createImageFromNodeAttributes(Node node){
-       String linkToImage = node.getAttributes().item(1).getNodeValue();
+        String linkToImage = node.getAttributes().item(1).getNodeValue();
         String imageSize =  node.getAttributes().item(2).getNodeValue();
 
-        return new Image(imageSize,linkToImage);
+        return new Image(linkToImage,imageSize);
     }
 
 }
