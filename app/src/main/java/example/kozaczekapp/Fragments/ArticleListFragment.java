@@ -14,32 +14,59 @@ import java.util.ArrayList;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
 
-
+/**
+ *  Fragment class implements List of Articles in UI.
+ */
 public class ArticleListFragment extends Fragment {
     ArticleListAdapter adapter;
-    public static final String PARCELABLE_ARRAY_KEY = "FragmentParcelable";
+    public static final String PARCELABLE_ARTICLE_ARRAY_KEY = "FragmentParcelable";
+    public static final String PARCELABLE_ADAPTER_KEY = "Adapter_Parcelable";
 
+    /**
+     * Called to have the fragment instantiate its user interface view. This is optional, and non-graphical
+     * fragments can return null (which is the default implementation). This will be called between onCreate(Bundle)
+     * and onActivityCreated(Bundle).
+     * @param inflater The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container If non-null, this is the parent view that the fragment's UI should be attached to.
+     *                  The fragment should not add the view itself, but this can be used to generate the LayoutParams of the view
+     * @param savedInstanceState  If non-null, this fragment is being re-constructed from a previous saved state as given here.
+     * @return The View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.article_list_layout, container, false);
-        adapter = new ArticleListAdapter(view.getContext());
+        if(savedInstanceState != null){
+            adapter = savedInstanceState.getParcelable(PARCELABLE_ADAPTER_KEY);
+        }else {
+            adapter = new ArticleListAdapter(view.getContext());
+        }
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.allTasks);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
         return view;
     }
+
+    /**
+     * Method to replace all articles in adapter for new articles
+     * and notify it to adapter;
+     * @param articles ArrayList of articles.
+     */
     public void updateTasksInList(ArrayList<Article> articles){
         adapter.replaceListOfArtiles(articles);
         adapter.notifyDataSetChanged();
     }
 
-    public ArticleListAdapter getAdapter() {
-        return adapter;
-    }
-
-    public void setAdapter(ArticleListAdapter adapter) {
-        this.adapter = adapter;
+    /**
+     * Called to ask the fragment to save its current dynamic state, so it can later be reconstructed
+     * in a new instance of its process is restarted. If a new instance of the fragment later needs
+     * to be created, the data you place in the Bundle here will be available in the Bundle given
+     * to onCreate(Bundle),onCreateView(LayoutInflater, ViewGroup, Bundle), and onActivityCreated(Bundle)
+     * @param outState Bundle in which to place your saved state.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ArticleListFragment.PARCELABLE_ADAPTER_KEY, adapter);
     }
 }

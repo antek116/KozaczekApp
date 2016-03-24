@@ -14,29 +14,34 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import java.util.ArrayList;
 
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
+import example.kozaczekapp.Service.MyOnClickListener;
 
 /**
- * Class implementation of TaskPreview adapter.
+ * Adapter Class implementation of ArticleList adapter.
  */
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> implements Parcelable {
     ArrayList<Article> listOfArticles = new ArrayList<>();
     Context context;
     private LruCache<String,Bitmap> mLruCache;
     /**
-     * Constructor where we initialize ArrayList of tasks;
+     * Constructor where we initialize LRU cache;
      */
     public ArticleListAdapter(Context context) {
-
         this.context = context;
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         final int cacheSize = maxMemory / 4;
         Log.d("LRUCACHE", "max memory " + maxMemory + " cache size " + cacheSize);
         mLruCache = new LruCache<String, Bitmap>(cacheSize) {
+            /**
+             * Method to return size of item in LRU cache;
+             * @param key as String.
+             * @param bitmap instance of Bitmap
+             * @return size of bitmap in KB;
+             */
             @Override
             protected int sizeOf(String key, Bitmap bitmap) {
                 return bitmap.getByteCount() / 1024;
@@ -44,10 +49,17 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         };
     }
 
+    /**
+     * Method create listOfArticles from parcelable;
+     * @param in Parcelable;
+     */
     protected ArticleListAdapter(Parcel in) {
         listOfArticles = in.createTypedArrayList(Article.CREATOR);
     }
 
+    /**
+     * Creator class for parcelable
+     */
     public static final Creator<ArticleListAdapter> CREATOR = new Creator<ArticleListAdapter>() {
         @Override
         public ArticleListAdapter createFromParcel(Parcel in) {
@@ -60,12 +72,17 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         }
     };
 
+    /**
+     * Method to find bitmap in LRU cache;
+     * @param key of Bitmap in LRU cache as String
+     * @return Bitmap if found if not null;
+     */
     public Bitmap getBitmapFromMemCache(String key) {
         return mLruCache.get(key);
     }
     /**
-     * Method to replace ArrayList of Tasks.
-     * @param list ArrayList of Tasks.
+     * Method to replace ArrayList of Articles.
+     * @param list ArrayList of Articles.
      */
     public void replaceListOfArtiles(ArrayList<Article> list)
     {
@@ -92,14 +109,15 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
      * @param position The position of the item within the adapter's data set.
      */
     @Override
-    public void onBindViewHolder(ArticleListAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(ArticleListAdapter.ViewHolder holder, final int position) {
+
         if(listOfArticles.size() != 0) {
+            holder.mView.setOnClickListener(new MyOnClickListener(listOfArticles.get(position).getLinkToArticle()));
             holder.mTitle.setText(listOfArticles.get(position).getTitle());
             holder.mDescription.setText(listOfArticles.get(position).getDescription());
             holder.mPubData.setText(listOfArticles.get(position).getPubDate());
             loadImage(holder,position);
         }
-
     }
     public void loadImage(ArticleListAdapter.ViewHolder holder ,int position){
         String imageUrl = listOfArticles.get(position).getImage().getImageUrl();
@@ -121,11 +139,20 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         return this.listOfArticles.size();
     }
 
+    /**
+     * Describe the kinds of special objects contained in this Parcelable's marshalled representation.
+     * @return 0 ?
+     */
     @Override
     public int describeContents() {
         return 0;
     }
 
+    /**
+     * Flatten this object in to a Parcel.
+     * @param dest dest The Parcel in which the object should be written
+     * @param flags flags Additional flags about how the object should be written. May be 0 or {@link #PARCELABLE_WRITE_RETURN_VALUE}.
+     */
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(listOfArticles);

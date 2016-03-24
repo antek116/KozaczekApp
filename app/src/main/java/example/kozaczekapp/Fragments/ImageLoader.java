@@ -12,16 +12,26 @@ import android.widget.ImageView;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.URL;
-
+/**
+ *  AsyncTask class to load image from URL.
+ */
 public class ImageLoader extends AsyncTask<Void, Void, Drawable> {
     private final WeakReference<ImageView> imageViewReference;
     private  Context context;
     private String imageUrl;
     private LruCache<String,Bitmap> mLruCache;
-    public ImageLoader(ImageView imageView,Context context, String imageName, LruCache<String,Bitmap> lruCache) {
+
+    /**
+     *  Constructor where we initialize ImageLoader
+     * @param imageView weak reference of imageView.
+     * @param context context of application.
+     * @param url Url to image as a string
+     * @param lruCache instance of LRU cache where Bitmap have to be saved.
+     */
+    public ImageLoader(ImageView imageView,Context context, String url, LruCache<String,Bitmap> lruCache) {
         imageViewReference = new WeakReference<>(imageView);
         this.context = context;
-        this.imageUrl = imageName;
+        this.imageUrl = url;
         this.mLruCache = lruCache;
     }
 

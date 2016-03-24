@@ -20,6 +20,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.KozaczekItems.Image;
 
+/**
+ * implementation class used to parse response from Kozaczek.pl
+ */
 public class KozaczekParser {
     private HttpResponse response;
     private static final String ITEM_TAG_NAME = "item";
@@ -29,9 +32,11 @@ public class KozaczekParser {
     private static final String ENCLOSURE = "enclosure";
     private static final String LINKGUID = "link";
 
-    public KozaczekParser() {
-
-    }
+    /**
+     * Method parse response to arrayList of ArticlesItems
+     * @param response HttpResponse.
+     * @return array List of Article objects.
+     */
     public ArrayList<Article> parse(HttpResponse response) {
         NodeList nodeList = null;
         Document doc = null;
@@ -60,10 +65,6 @@ public class KozaczekParser {
         InputSource inStream = new InputSource();
         inStream.setCharacterStream(new StringReader(xmlString));
         return db.parse(inStream);
-    }
-
-    public void setResponse(HttpResponse response){
-        this.response = response;
     }
 
     private Article parseNodeToArticle(Node node){
@@ -100,7 +101,6 @@ public class KozaczekParser {
     private Image createImageFromNodeAttributes(Node node){
         String linkToImage = node.getAttributes().item(1).getNodeValue();
         String imageSize =  node.getAttributes().item(2).getNodeValue();
-
         return new Image(linkToImage,imageSize);
     }
 
