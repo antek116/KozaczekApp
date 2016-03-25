@@ -7,13 +7,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 
 import example.kozaczekapp.KozaczekItems.Article;
@@ -30,23 +28,9 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     /**
      * Constructor where we initialize LRU cache;
      */
-    public ArticleListAdapter(Context context) {
+    public ArticleListAdapter(Context context, LruCache<String,Bitmap> cache) {
         this.context = context;
-        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-        final int cacheSize = maxMemory / 4;
-        Log.d("LRUCACHE", "max memory " + maxMemory + " cache size " + cacheSize);
-        mLruCache = new LruCache<String, Bitmap>(cacheSize) {
-            /**
-             * Method to return size of item in LRU cache;
-             * @param key as String.
-             * @param bitmap instance of Bitmap
-             * @return size of bitmap in KB;
-             */
-            @Override
-            protected int sizeOf(String key, Bitmap bitmap) {
-                return bitmap.getByteCount() / 1024;
-            }
-        };
+        this.mLruCache = cache;
     }
 
     /**
@@ -77,7 +61,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
      * @param key of Bitmap in LRU cache as String
      * @return Bitmap if found if not null;
      */
-    public Bitmap getBitmapFromMemCache(String key) {
+    private Bitmap getBitmapFromMemCache(String key) {
         return mLruCache.get(key);
     }
     /**
@@ -124,10 +108,10 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         if(getBitmapFromMemCache(imageUrl) != null){
             holder.imageView.setImageBitmap(mLruCache.get(imageUrl));
         }
-        else {
-            ImageLoader loader = new ImageLoader(holder.imageView, context, imageUrl, mLruCache);
-            loader.execute();
-        }
+//        else {
+//            ImageLoader loader = new ImageLoader(holder.imageView, context, imageUrl, mLruCache);
+//            loader.execute();
+//        }
     }
 
     /**
@@ -156,6 +140,10 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(listOfArticles);
+    }
+
+    public void imageUpdate() {
+        notifyDataSetChanged();
     }
 
     /**
@@ -194,6 +182,4 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             return super.toString() + " '" + mTitle.getText() + "'";
         }
     }
-
-
 }

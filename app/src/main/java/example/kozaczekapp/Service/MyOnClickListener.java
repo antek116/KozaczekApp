@@ -30,17 +30,12 @@ public class MyOnClickListener implements View.OnClickListener {
                 break;
             case R.id.refresh :
                 if(activity.checkNetworkConnection()) {
-                    ImageView image;
-                    if(((image = (ImageView) activity.findViewById(R.id.item_refresh))) != null) {
-                        image.setClickable(false);
-                    }
                     activity.startOrStopRefreshingAnimation(true, 1);
                     activity.startService(activity.getKozaczekServiceIntent());
                 } else {
                     activity.startOrStopRefreshingAnimation(true, 2);
                     Toast.makeText(activity.getApplicationContext(), "No internet connection", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             default:
                 break;

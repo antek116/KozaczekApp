@@ -19,6 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import example.kozaczekapp.Fragments.ArticleListFragment;
+import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.Service.KozaczekService;
 import example.kozaczekapp.Service.MyOnClickListener;
@@ -37,10 +38,15 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             ArrayList<Article> articles = intent.getParcelableArrayListExtra(ArticleListFragment.PARCELABLE_ARTICLE_ARRAY_KEY);
             listArticle.updateTasksInList(articles);
+            uptadeImageToLruCache(listArticle.getImageManager(),articles);
             stopService(kozaczekServiceIntent);
             startOrStopRefreshingAnimation(false, 0);
         }
     };
+
+    private void uptadeImageToLruCache(ImageManager imageManager,ArrayList<Article> articles) {
+            imageManager.addImagesFromArticlesToLruCache(articles);
+    }
 
     public Intent getKozaczekServiceIntent() {
         return kozaczekServiceIntent;
@@ -52,11 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (checkNetworkConnection()) {
-                isInternetConnection = true;
-            } else {
-                isInternetConnection = false;
-            }
+            isInternetConnection = checkNetworkConnection();
         }
     };
 
@@ -125,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void startOrStopRefreshingAnimation(boolean refreshing, int kind) {
         if (refreshMenuItem != null) {
+            image.setClickable(false);
             if (refreshing && kind == 1) {
                 anim.setRepeatCount(ObjectAnimator.INFINITE);
                 anim.setRepeatMode(ObjectAnimator.RESTART);
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 anim.setRepeatCount(1);
                 anim.setRepeatMode(ObjectAnimator.REVERSE);
                 anim.start();
+                image.setClickable(true);
             } else {
                 anim.setRepeatCount(1);
                 anim.start();

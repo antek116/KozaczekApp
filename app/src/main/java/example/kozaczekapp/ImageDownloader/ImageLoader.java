@@ -1,4 +1,4 @@
-package example.kozaczekapp.Fragments;
+package example.kozaczekapp.ImageDownloader;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -67,7 +67,9 @@ public class ImageLoader extends AsyncTask<Void, Void, Drawable> {
     }
     private Drawable resize(Context context, Bitmap image) {
         Bitmap bitmapResized = Bitmap.createScaledBitmap(image, 80, 80, false);
-        mLruCache.put(imageUrl,bitmapResized);
+       if(mLruCache.get(imageUrl) == null) {
+           mLruCache.put(imageUrl, bitmapResized);
+       }
         return new BitmapDrawable(context.getResources(), bitmapResized);
     }
 }

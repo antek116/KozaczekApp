@@ -1,8 +1,10 @@
 package example.kozaczekapp.Fragments;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.LruCache;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,17 +12,22 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.Observable;
+import java.util.Observer;
 
+import example.kozaczekapp.ImageDownloader.ImageManager;
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
 
 /**
  *  Fragment class implements List of Articles in UI.
  */
-public class ArticleListFragment extends Fragment {
+public class ArticleListFragment extends Fragment implements Observer{
     ArticleListAdapter adapter;
     public static final String PARCELABLE_ARTICLE_ARRAY_KEY = "FragmentParcelable";
     public static final String PARCELABLE_ADAPTER_KEY = "Adapter_Parcelable";
+    public static final String LRU_CACHE_KEY = "FragmentLruCache";
+    private ImageManager imageManager= new ImageManager();
 
     /**
      * Called to have the fragment instantiate its user interface view. This is optional, and non-graphical
@@ -36,10 +43,13 @@ public class ArticleListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.article_list_layout, container, false);
+
+        imageManager.addObserver(this);
+
         if(savedInstanceState != null){
             adapter = savedInstanceState.getParcelable(PARCELABLE_ADAPTER_KEY);
         }else {
-            adapter = new ArticleListAdapter(view.getContext());
+            adapter = new ArticleListAdapter(view.getContext(),imageManager.getLruCache());
         }
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.allTasks);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -56,7 +66,9 @@ public class ArticleListFragment extends Fragment {
         adapter.replaceListOfArtiles(articles);
         adapter.notifyDataSetChanged();
     }
-
+    public ImageManager getImageManager(){
+        return this.imageManager;
+    }
     /**
      * Called to ask the fragment to save its current dynamic state, so it can later be reconstructed
      * in a new instance of its process is restarted. If a new instance of the fragment later needs
@@ -69,4 +81,10 @@ public class ArticleListFragment extends Fragment {
         super.onSaveInstanceState(outState);
         outState.putParcelable(ArticleListFragment.PARCELABLE_ADAPTER_KEY, adapter);
     }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        adapter.notifyDataSetChanged();
+    }
+
 }
