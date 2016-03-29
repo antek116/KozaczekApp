@@ -29,6 +29,10 @@ public class Article implements Parcelable {
         this.description = description;
     }
 
+    /**
+     * Constructor to create instance of Article from Parcelable.
+     * @param in parcelable
+     */
     protected Article(Parcel in) {
         image = in.readParcelable(Image.class.getClassLoader());;
         title = in.readString();

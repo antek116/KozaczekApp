@@ -2,9 +2,6 @@ package example.kozaczekapp.Service;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Parcelable;
-import android.support.v4.util.LruCache;
 import android.util.Log;
 
 import org.apache.http.HttpResponse;
@@ -18,9 +15,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import example.kozaczekapp.Fragments.ArticleListFragment;
-import example.kozaczekapp.ImageDownloader.ImageLoader;
 import example.kozaczekapp.KozaczekItems.Article;
 
+/**
+ * Implementation of Kozaczek.pl service.
+ */
 public class KozaczekService extends IntentService {
 
     public static final String URL = "url";
@@ -53,6 +52,11 @@ public class KozaczekService extends IntentService {
             }
     }
 
+    /**
+     * Method to get Response from url.
+     * @param url string url to article.
+     * @return response from url.
+     */
     public HttpResponse getResponseFromUrl(String url){
         HttpClient httpClient = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);

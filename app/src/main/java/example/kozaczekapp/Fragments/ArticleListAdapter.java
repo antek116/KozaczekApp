@@ -1,7 +1,5 @@
 package example.kozaczekapp.Fragments;
 
-
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
-
 import example.kozaczekapp.KozaczekItems.Article;
 import example.kozaczekapp.R;
 import example.kozaczekapp.Service.MyOnClickListener;
@@ -23,13 +20,11 @@ import example.kozaczekapp.Service.MyOnClickListener;
  */
 public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.ViewHolder> implements Parcelable {
     ArrayList<Article> listOfArticles = new ArrayList<>();
-    Context context;
     private LruCache<String,Bitmap> mLruCache;
     /**
      * Constructor where we initialize LRU cache;
      */
-    public ArticleListAdapter(Context context, LruCache<String,Bitmap> cache) {
-        this.context = context;
+    public ArticleListAdapter(LruCache<String,Bitmap> cache) {
         this.mLruCache = cache;
     }
 
@@ -42,7 +37,7 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     }
 
     /**
-     * Creator class for parcelable
+     * Creator class for parcelable.
      */
     public static final Creator<ArticleListAdapter> CREATOR = new Creator<ArticleListAdapter>() {
         @Override
@@ -57,22 +52,13 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
     };
 
     /**
-     * Method to find bitmap in LRU cache;
-     * @param key of Bitmap in LRU cache as String
-     * @return Bitmap if found if not null;
-     */
-    private Bitmap getBitmapFromMemCache(String key) {
-        return mLruCache.get(key);
-    }
-    /**
      * Method to replace ArrayList of Articles.
      * @param list ArrayList of Articles.
      */
-    public void replaceListOfArtiles(ArrayList<Article> list)
+    public void replaceListOfArticles(ArrayList<Article> list)
     {
         this.listOfArticles = list;
     }
-
     /**
      * This method calls onCreateViewHolder(ViewGroup, int) to create a new RecyclerView.ViewHolder
      * and initializes some private fields to be used by RecyclerView.
@@ -100,18 +86,20 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
             holder.mTitle.setText(listOfArticles.get(position).getTitle());
             holder.mDescription.setText(listOfArticles.get(position).getDescription());
             holder.mPubData.setText(listOfArticles.get(position).getPubDate());
-            loadImage(holder,position);
+            loadImageToImageView(holder, position);
         }
     }
-    public void loadImage(ArticleListAdapter.ViewHolder holder ,int position){
+
+    /**
+     * Method used to load image from LruCache.
+     * @param holder instance of ViewHolder.
+     * @param position position in list;
+     */
+    public void loadImageToImageView(ArticleListAdapter.ViewHolder holder, int position){
         String imageUrl = listOfArticles.get(position).getImage().getImageUrl();
         if(getBitmapFromMemCache(imageUrl) != null){
             holder.imageView.setImageBitmap(mLruCache.get(imageUrl));
         }
-//        else {
-//            ImageLoader loader = new ImageLoader(holder.imageView, context, imageUrl, mLruCache);
-//            loader.execute();
-//        }
     }
 
     /**
@@ -142,8 +130,20 @@ public class ArticleListAdapter extends RecyclerView.Adapter<ArticleListAdapter.
         dest.writeTypedList(listOfArticles);
     }
 
+    /**
+     * Used to notify that Image was added to LruCache;
+     */
     public void imageUpdate() {
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
+    }
+
+    /**
+     * Method to find bitmap in LRU cache;
+     * @param key of Bitmap in LRU cache as String
+     * @return Bitmap if found if not null;
+     */
+    private Bitmap getBitmapFromMemCache(String key) {
+        return mLruCache.get(key);
     }
 
     /**

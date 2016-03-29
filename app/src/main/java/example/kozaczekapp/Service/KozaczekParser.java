@@ -1,7 +1,5 @@
 package example.kozaczekapp.Service;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -18,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import example.kozaczekapp.KozaczekItems.Article;
+
 import example.kozaczekapp.KozaczekItems.Image;
 /**
  * implementation class used to parse response from Kozaczek.pl
@@ -54,8 +53,6 @@ public class KozaczekParser {
         }
         return arrayOfArticles;
     }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     private Document buildDocumentFromInputStream(HttpResponse response)throws IOException,
                                                                         ParserConfigurationException,
                                                                             SAXException {

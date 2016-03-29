@@ -10,6 +10,9 @@ import android.widget.Toast;
 import example.kozaczekapp.MainActivity;
 import example.kozaczekapp.R;
 
+/**
+ * Implementation of MyOnClicklistener.
+ */
 public class MyOnClickListener implements View.OnClickListener {
     String urlToArticle;
     MainActivity activity;
@@ -20,6 +23,10 @@ public class MyOnClickListener implements View.OnClickListener {
         this.activity = activity;
     }
 
+    /**
+     * Called when a view has been clicked.
+     * @param v View The view that was clicked.
+     */
     @Override
     public void onClick(View v) {
         switch(v.getId()) {

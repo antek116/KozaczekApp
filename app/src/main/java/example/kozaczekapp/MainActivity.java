@@ -38,13 +38,13 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             ArrayList<Article> articles = intent.getParcelableArrayListExtra(ArticleListFragment.PARCELABLE_ARTICLE_ARRAY_KEY);
             listArticle.updateTasksInList(articles);
-            uptadeImageToLruCache(listArticle.getImageManager(),articles);
+            updateImageToLabCache(listArticle.getImageManager(), articles);
             stopService(kozaczekServiceIntent);
             startOrStopRefreshingAnimation(false, 0);
         }
     };
 
-    private void uptadeImageToLruCache(ImageManager imageManager,ArrayList<Article> articles) {
+    private void updateImageToLabCache(ImageManager imageManager, ArrayList<Article> articles) {
             imageManager.addImagesFromArticlesToLruCache(articles);
     }
 
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 startService(kozaczekServiceIntent);
             }
             else{
-                Toast.makeText(this,"NO INTERNET CONECTION",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"NO INTERNET CONNECTION",Toast.LENGTH_SHORT).show();
             }
         } else {
             listArticle = (ArticleListFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_KEY);

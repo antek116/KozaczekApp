@@ -2,25 +2,28 @@ package example.kozaczekapp.ImageDownloader;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import example.kozaczekapp.KozaczekItems.Article;
 
+/**
+ * Implementation of Class ImageManager;
+ * Class used to manage all image that have been or has been downloaded.
+ */
 public class ImageManager extends Observable implements Observer {
-
 
     private LruCache<String,Bitmap> mLruCache;
     private ExecutorService executor = Executors.newFixedThreadPool(5);
 
+    /**
+     * Constructor of imageManager where we initialize LruCache;
+     */
     public ImageManager(){
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         final int cacheSize = maxMemory / 4;
-        Log.d("LRUCACHE", "max memory " + maxMemory + " cache size " + cacheSize);
         mLruCache = new LruCache<String, Bitmap>(cacheSize) {
             /**
              * Method to return size of item in LRU cache;
@@ -35,14 +38,18 @@ public class ImageManager extends Observable implements Observer {
         };
     }
 
-
+    /**
+     *
+     * @return instance of LruCache;
+     */
     public LruCache<String,Bitmap> getLruCache(){
         return this.mLruCache;
     }
-    private Bitmap getBitmapFromMemCache(String key) {
-        return mLruCache.get(key);
-    }
 
+    /**
+     * method add images from Articles to LruCache.
+     * @param articleArrayList Articles as ArrayList.
+     */
     public void addImagesFromArticlesToLruCache(ArrayList<Article> articleArrayList) {
         for(Article article : articleArrayList)
         {
@@ -53,13 +60,22 @@ public class ImageManager extends Observable implements Observer {
         }
 
     }
-    private void downloadBitmap(String imageUrl){
-        ImageLoad imageLoad = new ImageLoad(imageUrl,mLruCache,this);
-        executor.execute(imageLoad);
-    }
-
+    /**
+     *This method is called whenever the observed object is changed.
+     * An application calls an Observable object's notifyObservers method to
+     * have all the object's observers notified of the change.
+     * @param observable the observable object.
+     * @param data argument passed to the notifyObservers method.
+     */
     @Override
     public void update(Observable observable, Object data) {
+        setChanged();
         notifyObservers();
+    }
+
+    private void downloadBitmap(String imageUrl){
+        ImageLoad imageLoad = new ImageLoad(imageUrl,mLruCache,this);
+        imageLoad.addObserver(this);
+        executor.execute(imageLoad);
     }
 }
